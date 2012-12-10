@@ -6,7 +6,7 @@ namespace NameToNumbers
 {
     class NametoNumbers
     {
-        static string name = "shriram";
+        static string name = "shri";
         static int MaxDigits = 10;
         private static double totalExecutions = 0;
 
@@ -104,7 +104,7 @@ namespace NameToNumbers
                     }
                 }
 
-                /******** For PAGING - increases the counter after 1000 entries so that contents get saved to the next file
+                /******** For PAGING - increases the counter after the inner loop of entries so that contents get saved to the next file
                 * Comment this out if you want all numbers in the same file
                 * This increases execution due to opening and closing a number of files and should be used only when needed. ***********/
 
