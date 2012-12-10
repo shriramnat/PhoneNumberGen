@@ -100,7 +100,6 @@ namespace NameToNumbers
                     double prefixedVal = 0;
                     for (; PhoneNumberCount < Math.Pow(10, i); PhoneNumberCount++)
                     {
-
                         prefixedVal = PhoneNumberCount * Math.Pow(10, name.Length) + keypadNumberValue;
                         SuffixValue(MaxDigits, prefixedVal, Convert.ToString(prefixedVal), file);
                     }
