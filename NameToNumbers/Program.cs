@@ -2,12 +2,15 @@
 using System.Text;
 namespace NameToNumbers
 {
-    class Program
+    class NametoNumbers
     {
         static void Main(string[] args)
         {
-            string name = "abc";
+            string name = "Vishal";
             int MaxDigits = 10;
+
+            /*Dictionary that mapps the characters to numbers assuming a to be at oth position and z to be at 25th- the values in the array at that position
+              are the corresponding numbers on a phone's keypad when the characters are entered - an alternate approach would be to use a dictionary object */
 
             int[] keypadDictionary = new int[26];
             keypadDictionary[0] = keypadDictionary[1] = keypadDictionary[2] = 2;
@@ -24,19 +27,61 @@ namespace NameToNumbers
             {
                 keypadNumberValue = keypadNumberValue * 10 + keypadDictionary[a - 'a'];
             }
+
+            //tracking execution time
             using (System.IO.StreamWriter testBenchFile = new System.IO.StreamWriter(@"TestBench.txt"))
             {
                 DateTime begin = DateTime.UtcNow;
-                testBenchFile.Write("Started at: " + begin.ToString());
+                testBenchFile.WriteLine("Started at: " + begin.ToString());
 
                 PrefixValue(MaxDigits, keypadNumberValue, name);
                 
                 DateTime end = DateTime.UtcNow;
-                testBenchFile.WriteLine("\n Ended at: " + end.ToString() + "\n");
-                testBenchFile.WriteLine("\n\nMeasured time for the last iteration: \t" + (end - begin).TotalSeconds + " s. \n\n");
+                testBenchFile.WriteLine("Ended at: " + end.ToString());
+                testBenchFile.WriteLine("Measured time for Execution: " + (end - begin).TotalSeconds + " s.");
+            }
+
+        }
+
+        /// <summary>
+        ///     Identifies the various numbers that can be prefixed to the converted value
+        ///     Prepends the values to converted value and sends it to the SuffixValue method
+        ///     eg: if the converted value is 998 , it sends over 998, 1998, 2998.....9998, 10998, 11998 etc
+        /// </summary>
+        /// <param name="MaxDigits"></param>
+        /// <param name="keypadNumberValue"></param>
+        /// <param name="name"></param>
+
+        private static void PrefixValue(int MaxDigits, double keypadNumberValue, string name)
+        {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@Convert.ToString(name + "-PhoneNumbers.txt")))
+            {
+                Console.WriteLine("Name: {0}  Converted Value: {1}", name, keypadNumberValue);
+                double j = 0;
+                for (int i = 0; i < MaxDigits - name.Length + 1; i++)
+                {
+                    double prefixedVal = 0;
+                    for (; j < Math.Pow(10, i); j++)
+                    {
+                        prefixedVal = j * Math.Pow(10, name.Length) + keypadNumberValue;
+                        //Console.WriteLine("Sending value:" + prefixedVal);
+                        SuffixValue(MaxDigits, prefixedVal, Convert.ToString(prefixedVal), file);
+                    }
+                }
+
             }
         }
 
+        /// <summary>
+        ///     Identifies the various numbers that can be suffixed to the value from the PrefixValue Method
+        ///     Appends the values to input value and writes it to file
+        ///     eg: if the received value is 1998 and MaxLength is 5 , it writes 19980. 19981.....19989 to file
+        /// </summary>
+        /// <param name="MaxDigits"></param>
+        /// <param name="keypadNumberValue"></param>
+        /// <param name="name"></param>
+        /// <param name="file"></param>
+        
         private static void SuffixValue(int MaxDigits, double keypadNumberValue, string name, System.IO.StreamWriter file)
         {
             int curLen = MaxDigits; 
@@ -51,27 +96,6 @@ namespace NameToNumbers
                 }
             }   
         }
-
-        private static void PrefixValue(int MaxDigits, double keypadNumberValue, string name)
-        {
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@Convert.ToString(name+"-PhoneNumbers.txt")))
-            {
-                Console.WriteLine("Name: {0}  Converted Value: {1}", name, keypadNumberValue);
-                double j = 0;
-                for (int i = 0; i < MaxDigits - name.Length + 1; i++)
-                {
-                    double testingval = 0;
-                    for (; j < Math.Pow(10, i); j++)
-                    {
-                        testingval = j * Math.Pow(10, name.Length) + keypadNumberValue;
-                        //Console.WriteLine("Sending value:" + testingval);
-                        SuffixValue(MaxDigits, testingval, Convert.ToString(testingval), file);
-                    }
-                }
-
-            }
-        }
-
 
     }
 }
