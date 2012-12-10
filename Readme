@@ -1,3 +1,1 @@
-This repository that contains projects that i do in my spare time. They will be listed here
-
-- Phone Number generator
+This repository contains code for a Phone number generator which, if given a name will generate ALL possible phone numbers with that name present in it.
