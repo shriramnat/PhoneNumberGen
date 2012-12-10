@@ -9,13 +9,13 @@ namespace NameToNumbers
         static string name = "shriram";
         static int MaxDigits = 10;
         private static double totalExecutions = 0;
-        
+
         //Constructor
         public NametoNumbers()
         {
-
         }
 
+        //Regex to check if the string does not contain numbers or special characters
         private static bool isValid(String str)
         {
             return Regex.IsMatch(str, @"^[a-zA-Z]+$");
@@ -23,7 +23,6 @@ namespace NameToNumbers
 
         static void Main(string[] args)
         {
-
             double keypadNumberValue = 0;
             int[] keypadDictionary = new int[26];
 
