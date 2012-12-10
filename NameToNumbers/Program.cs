@@ -6,10 +6,10 @@ namespace NameToNumbers
     {
         static void Main(string[] args)
         {
-            string name = "Vishal";
+            string name = "shriram";
             int MaxDigits = 10;
 
-            /*Dictionary that mapps the characters to numbers assuming a to be at oth position and z to be at 25th- the values in the array at that position
+            /*Dictionary that mapps the characters to numbers assuming a to be at 0th position and z to be at 25th- the values in the array at that position
               are the corresponding numbers on a phone's keypad when the characters are entered - an alternate approach would be to use a dictionary object */
 
             int[] keypadDictionary = new int[26];
@@ -22,25 +22,33 @@ namespace NameToNumbers
             keypadDictionary[19] = keypadDictionary[20] = keypadDictionary[21] = 8;
             keypadDictionary[22] = keypadDictionary[23] = keypadDictionary[24] = keypadDictionary[25] = 9;
 
+            //Convert Name into its corresponding numerical value
             double keypadNumberValue = 0;
             foreach (char a in name.ToLower())
             {
                 keypadNumberValue = keypadNumberValue * 10 + keypadDictionary[a - 'a'];
             }
 
-            //tracking execution time
-            using (System.IO.StreamWriter testBenchFile = new System.IO.StreamWriter(@"TestBench.txt"))
+            //Writes the Execution Summary to a File 
+            using (System.IO.StreamWriter testBenchFile = new System.IO.StreamWriter(@Convert.ToString(name + "-ExecutionSummary.txt")))
             {
-                DateTime begin = DateTime.UtcNow;
-                testBenchFile.WriteLine("Started at: " + begin.ToString());
+                if (name.Length > MaxDigits || name.Length == 0)
+                    testBenchFile.WriteLine("Unable to calculate phone numbers as the input text is empty or has more than 10 characters!");
+                else
+                {
+                    //execution time tracking harness
+                    DateTime begin = DateTime.UtcNow;
+                    
+                    PrefixValue(MaxDigits, keypadNumberValue, name);
 
-                PrefixValue(MaxDigits, keypadNumberValue, name);
-                
-                DateTime end = DateTime.UtcNow;
-                testBenchFile.WriteLine("Ended at: " + end.ToString());
-                testBenchFile.WriteLine("Measured time for Execution: " + (end - begin).TotalSeconds + " s.");
+                    DateTime end = DateTime.UtcNow;
+
+                    testBenchFile.WriteLine("Name: {0}  Converted Value: {1}", name, keypadNumberValue);
+                    testBenchFile.WriteLine("Started at: " + begin.ToString());
+                    testBenchFile.WriteLine("Ended at: " + end.ToString());
+                    testBenchFile.WriteLine("Measured time for Execution: " + (end - begin).TotalSeconds + " s.");
+                }
             }
-
         }
 
         /// <summary>
@@ -56,7 +64,7 @@ namespace NameToNumbers
         {
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(@Convert.ToString(name + "-PhoneNumbers.txt")))
             {
-                Console.WriteLine("Name: {0}  Converted Value: {1}", name, keypadNumberValue);
+                //Console.WriteLine("Name: {0}  Converted Value: {1}", name, keypadNumberValue);
                 double j = 0;
                 for (int i = 0; i < MaxDigits - name.Length + 1; i++)
                 {
@@ -64,7 +72,6 @@ namespace NameToNumbers
                     for (; j < Math.Pow(10, i); j++)
                     {
                         prefixedVal = j * Math.Pow(10, name.Length) + keypadNumberValue;
-                        //Console.WriteLine("Sending value:" + prefixedVal);
                         SuffixValue(MaxDigits, prefixedVal, Convert.ToString(prefixedVal), file);
                     }
                 }
@@ -81,20 +88,24 @@ namespace NameToNumbers
         /// <param name="keypadNumberValue"></param>
         /// <param name="name"></param>
         /// <param name="file"></param>
-        
+
         private static void SuffixValue(int MaxDigits, double keypadNumberValue, string name, System.IO.StreamWriter file)
         {
-            int curLen = MaxDigits; 
+            int curLen = MaxDigits;
             if (curLen < name.Length) return;
             else
             {
                 double startvalue = keypadNumberValue * (Math.Pow(10, (curLen - name.Length)));
                 for (double i = 0; i < Math.Pow(10, (curLen - name.Length)); i++)
                 {
-                    file.Write(startvalue + ",");
+                    if (startvalue < Math.Pow(10,MaxDigits-1))
+                        //This should never be hit
+                        throw new System.InvalidOperationException("value is less than 10 digits");
+                    else
+                        file.Write(startvalue + ",");
                     startvalue++;
                 }
-            }   
+            }
         }
 
     }
